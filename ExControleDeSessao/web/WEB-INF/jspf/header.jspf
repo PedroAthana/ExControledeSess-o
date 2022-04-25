@@ -1,0 +1,67 @@
+<%@ page pageEncoding="UTF-8" %>
+<style>
+    .header {
+        margin: 15px;
+        border-style: solid;
+        border-radius: 10px;
+        padding-left: 50px;
+    }
+
+    table, tr, td {
+        border: 1px solid black;
+        font-size: 20px;
+    }
+        
+    #titulo-lot {
+        font-size: 30px;
+        
+    }
+</style>
+<%@page import="java.util.*" %>
+<%   
+Random rand = new Random();
+
+    if(request.getParameter("logon")!=null){
+        String username = request.getParameter("username");
+        int[] numsLoteria = new int[6]; int i; int num;
+        ArrayList listaNumeros = new ArrayList();
+        session.setAttribute("username", username);
+        //Criando números da loteria únicos para esta sessão
+        for(i=0;i<6;i++){
+            num = rand.nextInt(100)+1;
+            if (listaNumeros.contains(num)) {
+                i--;
+            } else {
+                listaNumeros.add(num);
+            }
+            numsLoteria[i] = num;
+        }
+        //salvando esses valores na sessão
+        session.setAttribute("numLoteria", numsLoteria);
+        response.sendRedirect(request.getRequestURI());
+    }
+    if(request.getParameter("logoff")!=null){
+        session.removeAttribute("username");
+        response.sendRedirect(request.getRequestURI());
+    }
+%>
+
+
+
+<div class="header">
+    <a href="index.jsp"  ><h1 id="titulo-lot" align="center">Central da Sorte!!</h1></a>
+<hr/>
+<a href="index.jsp">INDEX</a> |
+<a href="sobre.jsp">SOBRE</a> | 
+<%if(session.getAttribute("username")==null){%>
+<h3>Identifique-se para efetuar o login</h3>
+<%}else{%>
+    <form>
+        
+        <a href="loteria.jsp">Numeros para loteria <3</a> |
+        Bem-Vindo(a), <b><%= session.getAttribute("username") %></b>
+        <input type="submit" name="logoff" value="Sair"/>
+    </form>
+<%}%>
+</div>
+<br/>
